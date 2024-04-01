@@ -1,4 +1,4 @@
-package database
+package db
 
 import (
 	"errors"
@@ -17,7 +17,7 @@ var err error
 type Product struct {
 	ID          string `json:"id" gorm:"primarykey"`
 	Code        string `json:"code"`
-	Price string `json:"price"`
+	Price int32 `json:"price"`
  }
 
 
@@ -55,7 +55,6 @@ func InitPostgresDB()  {
 }
 
 func CreateProduct(product *Product) (*Product, error) {
-	fmt.Println(product)
 	product.ID = uuid.New().String()
     res := db.Create(&product)
     if res.Error != nil {
@@ -69,7 +68,34 @@ func CreateProduct(product *Product) (*Product, error) {
 	var product Product
 	res := db.First(&product, "id = ?", id)
 	if res.RowsAffected == 0 {
-	  return nil, errors.New(fmt.Sprintf("product of id %s not found", id))
+	  return nil, fmt.Errorf("product of id %s not found", id)
 	}
    return &product, nil
   }
+
+  func GetProducts() ([]*Product, error) {
+	var products []*Product
+	res := db.Find(&products)
+	if res.Error != nil {
+		return nil, errors.New("no products found")
+	}
+	return products, nil
+ }
+
+ func UpdateProduct(product *Product) (*Product, error) {
+    var productToUpdate Product
+    result := db.Model(&productToUpdate).Where("id = ?", product.ID).Updates(product)
+    if result.RowsAffected == 0 {
+        return &productToUpdate, errors.New("product not updated")
+    }
+    return product, nil
+ }
+
+ func DeleteProduct(id string) error {
+    var deletedProduct Product
+    result := db.Where("id = ?", id).Delete(&deletedProduct)
+    if result.RowsAffected == 0 {
+        return errors.New("product not deleted")
+    }
+    return nil
+ }

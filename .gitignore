@@ -19,5 +19,4 @@
 .env
 main
 bin
-__*
 pkg

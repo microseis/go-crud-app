@@ -8,6 +8,6 @@ import (
  
 
 func main() {
-    database.InitPostgresDB()
+    db.InitPostgresDB()
     router.InitRouter().Run("localhost:5000")
 }
