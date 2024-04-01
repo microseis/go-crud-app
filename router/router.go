@@ -9,11 +9,15 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	r.POST("/product", postProduct)
-	r.GET("/product/:id", getProduct)
-	r.GET("/products", getProducts)
-	r.PUT("/product/:id", putProduct)
-	r.DELETE("/product/:id", deleteProduct)
+	v1 := r.Group("/api/v1")
+	{
+		v1.POST("/product", postProduct)
+		v1.GET("/product/:id", getProduct)
+		v1.GET("/products", getProducts)
+		v1.PUT("/product/:id", putProduct)
+		v1.DELETE("/product/:id", deleteProduct)
+	}
+
 	return r
 }
 
