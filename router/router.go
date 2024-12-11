@@ -5,10 +5,21 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	docs "aleksei/go/docs"
+ swaggerfiles "github.com/swaggo/files"
 )
 
+// инициализация роутера
 func InitRouter() *gin.Engine {
+
 	r := gin.Default()
+	r.SetTrustedProxies([]string{"localhost"})
+// добавление в роутер сваггера
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	docs.SwaggerInfo.BasePath = "/api/v1"
+
 	v1 := r.Group("/api/v1")
 	{
 		v1.POST("/product", postProduct)
@@ -21,9 +32,19 @@ func InitRouter() *gin.Engine {
 	return r
 }
 
+// @Summary      Create Product
+// @Description  create a product
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        Code    query     string  true  "product code"
+// @Param        Price    query     string  true  "product price"
+// @Success      200  {object}  db.Product
+// @Router       /product [post]
 func postProduct(ctx *gin.Context) {
 	var product db.Product
 	err := ctx.Bind(&product)
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -42,6 +63,14 @@ func postProduct(ctx *gin.Context) {
 	})
 }
 
+// @Summary      Get Product
+// @Description  get product by ID
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Product ID"
+// @Success      200  {object}  db.Product
+// @Router       /product/{id} [get]
 func getProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	res, err := db.GetProduct(id)
@@ -56,6 +85,13 @@ func getProduct(ctx *gin.Context) {
 	})
 }
 
+// @Summary      Get Products
+// @Description  get all products
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  db.Product
+// @Router       /products [get]
 func getProducts(ctx *gin.Context) {
 	res, err := db.GetProducts()
 	if err != nil {
@@ -69,9 +105,18 @@ func getProducts(ctx *gin.Context) {
 	})
 }
 
+// @Summary      Delete Product
+// @Description  delete product by ID
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "Product ID"
+// @Success      200  {object}  db.Product
+// @Router       /product/{id} [delete]
 func deleteProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := db.DeleteProduct(id)
+
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"error": err.Error(),
@@ -83,6 +128,17 @@ func deleteProduct(ctx *gin.Context) {
 	})
 }
 
+// Обновление продукта по id
+// @Summary      Update Product
+// @Description  update a product by id
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id    path     string  true  "product id"
+// @Param        Price    query     string  true  "product price"
+// @Param        Code    query     string  true  "product code"
+// @Success      200  {object}  db.Product
+// @Router       /product/{id} [put]
 func putProduct(ctx *gin.Context) {
 	var updatedProduct db.Product
 	err := ctx.Bind(&updatedProduct)
@@ -94,6 +150,7 @@ func putProduct(ctx *gin.Context) {
 	}
 	id := ctx.Param("id")
 	dbMovie, err := db.GetProduct(id)
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -104,6 +161,7 @@ func putProduct(ctx *gin.Context) {
 	dbMovie.Code = updatedProduct.Code
 
 	res, err := db.UpdateProduct(dbMovie)
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

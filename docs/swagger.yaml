@@ -1,0 +1,136 @@
+basePath: /api/v1
+definitions:
+  db.Product:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      price:
+        type: integer
+    type: object
+externalDocs:
+  description: OpenAPI
+host: localhost:5000
+info:
+  contact: {}
+  description: This is a sample Open API
+  title: Swagger API
+  version: "1.0"
+paths:
+  /product:
+    post:
+      consumes:
+      - application/json
+      description: create a product
+      parameters:
+      - description: product code
+        in: query
+        name: Code
+        required: true
+        type: string
+      - description: product price
+        in: query
+        name: Price
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Product'
+      summary: Create Product
+      tags:
+      - products
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Product'
+      summary: Delete Product
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: get product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Product'
+      summary: Get Product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: update a product by id
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: product price
+        in: query
+        name: Price
+        required: true
+        type: string
+      - description: product code
+        in: query
+        name: Code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Product'
+      summary: Update Product
+      tags:
+      - products
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: get all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Product'
+      summary: Get Products
+      tags:
+      - products
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
