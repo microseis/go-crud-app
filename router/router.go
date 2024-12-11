@@ -149,7 +149,7 @@ func putProduct(ctx *gin.Context) {
 		return
 	}
 	id := ctx.Param("id")
-	dbMovie, err := db.GetProduct(id)
+	product, err := db.GetProduct(id)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -157,10 +157,10 @@ func putProduct(ctx *gin.Context) {
 		})
 		return
 	}
-	dbMovie.Price = updatedProduct.Price
-	dbMovie.Code = updatedProduct.Code
+	product.Price = updatedProduct.Price
+	product.Code = updatedProduct.Code
 
-	res, err := db.UpdateProduct(dbMovie)
+	res, err := db.UpdateProduct(product)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{

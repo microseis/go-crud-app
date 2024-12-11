@@ -6,6 +6,7 @@ Simple REST app in Golang
 - Use of  Gin Web Framework
 - Connection to Postgres 
 - Use of GORM library
+- Swagger/OpenAPI documentation
 
 ## Run
 
