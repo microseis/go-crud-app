@@ -1,12 +1,13 @@
 package router
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	docs "aleksei/go/docs"
 	db "aleksei/go/db"
- 	swagger_files "github.com/swaggo/files"
+	docs "aleksei/go/docs"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	swagger_files "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // инициализация роутера

@@ -1,5 +1,4 @@
 # Simple Go CRUD APP
-
 Simple REST app in Golang 
 
 ## Features:
@@ -7,9 +6,18 @@ Simple REST app in Golang
 - Connection to Postgres 
 - Use of GORM library
 - Swagger/OpenAPI documentation
+- docker-compose.yml
+- App Config (local/docker .env)
 
 ## Run
-
 Configure environment variables in `.env` as provided in .env.example and then run the following command to serve the app: 
 
-```go run main.go```
+```
+go run cmd/main.go
+```
+
+## Tests
+
+```
+go test -v ./...
+```

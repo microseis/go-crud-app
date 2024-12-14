@@ -3,11 +3,12 @@ package main
 import (
 	"aleksei/go/db"
 	"aleksei/go/router"
+	"aleksei/go/utils"
+	"fmt"
 
-	//"log"
-	"os"
-	//	"github.com/joho/godotenv"
 )
+
+
 
 // @title           Swagger API
 // @version         1.0
@@ -18,11 +19,13 @@ import (
 // @externalDocs.description  OpenAPI
 func main() {
 
-	// err := godotenv.Load("../.env")
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file: %s", err)
-	// }
+	var cfg utils.Config
+	utils.ReadFile(&cfg)
+	utils.ReadEnv(&cfg)
+	
+	fmt.Printf("%+v", &cfg)
 
-	db.InitPostgresDB()
-	router.InitRouter().Run(os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT"))
+	db.InitPostgresDB(&cfg)
+
+	router.InitRouter().Run(fmt.Sprintf("%s:%s", cfg.App.Host, cfg.App.Port))
 }

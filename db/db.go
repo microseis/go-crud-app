@@ -3,7 +3,8 @@ package db
 import (
 	"errors"
 	"fmt"
-	"os"
+
+	"aleksei/go/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
@@ -20,14 +21,14 @@ type Product struct {
 }
 
 // Инициализация базы данных
-func InitPostgresDB() {
+func InitPostgresDB(appConfig *utils.Config) {
 
 	var (
-		DB_USER     = os.Getenv("DB_USER")
-		DB_PASSWORD = os.Getenv("DB_PASSWORD")
-		DB_NAME     = os.Getenv("DB_NAME")
-		DB_HOST     = os.Getenv("DB_HOST")
-		DB_PORT     = os.Getenv("DB_PORT")
+		DB_USER     = appConfig.Database.Username
+		DB_PASSWORD = appConfig.Database.Password
+		DB_NAME     = appConfig.Database.Name
+		DB_HOST     = appConfig.Database.Host
+		DB_PORT     = appConfig.Database.Port
 	)
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
@@ -39,7 +40,7 @@ func InitPostgresDB() {
 	)
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic("Failed to connect database")
 	}
 
 	// Migrate the schema
