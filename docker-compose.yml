@@ -1,0 +1,37 @@
+
+services:
+
+  app:
+    container_name: go-app
+    build: .
+    ports:
+      - 5000:5000
+    restart: on-failure
+    env_file:
+      - docker.env
+    volumes:
+      - .:/app
+    depends_on:
+      - go-db
+    links:
+      - go-db
+    networks:
+      - myNetwork
+
+  go-db:
+    image: postgres:15
+    container_name: go-db
+    ports:
+      - '5433:5433'
+    environment:
+      TZ: 'UTC'
+      PGTZ: 'UTC'
+    env_file:
+      - docker.env
+    networks:
+      - myNetwork
+    command: -p 5433
+
+networks:
+  myNetwork:
+    driver: bridge

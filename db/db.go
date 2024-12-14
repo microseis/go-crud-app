@@ -3,11 +3,9 @@ package db
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -23,11 +21,6 @@ type Product struct {
 
 // Инициализация базы данных
 func InitPostgresDB() {
-
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %s", err)
-	}
 
 	var (
 		DB_USER     = os.Getenv("DB_USER")

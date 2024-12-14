@@ -1,13 +1,12 @@
 package router
 
 import (
-	db "aleksei/go/db"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	docs "aleksei/go/docs"
- swaggerfiles "github.com/swaggo/files"
+	db "aleksei/go/db"
+ 	swagger_files "github.com/swaggo/files"
 )
 
 // инициализация роутера
@@ -15,18 +14,18 @@ func InitRouter() *gin.Engine {
 
 	r := gin.Default()
 	r.SetTrustedProxies([]string{"localhost"})
-// добавление в роутер сваггера
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	// добавление в роутер сваггера
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swagger_files.Handler))
 
 	docs.SwaggerInfo.BasePath = "/api/v1"
 
 	v1 := r.Group("/api/v1")
 	{
-		v1.POST("/product", postProduct)
-		v1.GET("/product/:id", getProduct)
-		v1.GET("/products", getProducts)
-		v1.PUT("/product/:id", putProduct)
-		v1.DELETE("/product/:id", deleteProduct)
+		v1.POST("/product", PostProduct)
+		v1.GET("/product/:id", GetProduct)
+		v1.GET("/products", GetProducts)
+		v1.PUT("/product/:id", PutProduct)
+		v1.DELETE("/product/:id", DeleteProduct)
 	}
 
 	return r
@@ -41,7 +40,7 @@ func InitRouter() *gin.Engine {
 // @Param        Price    query     string  true  "product price"
 // @Success      200  {object}  db.Product
 // @Router       /product [post]
-func postProduct(ctx *gin.Context) {
+func PostProduct(ctx *gin.Context) {
 	var product db.Product
 	err := ctx.Bind(&product)
 
@@ -71,7 +70,7 @@ func postProduct(ctx *gin.Context) {
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [get]
-func getProduct(ctx *gin.Context) {
+func GetProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	res, err := db.GetProduct(id)
 	if err != nil {
@@ -92,7 +91,7 @@ func getProduct(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  db.Product
 // @Router       /products [get]
-func getProducts(ctx *gin.Context) {
+func GetProducts(ctx *gin.Context) {
 	res, err := db.GetProducts()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -113,7 +112,7 @@ func getProducts(ctx *gin.Context) {
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [delete]
-func deleteProduct(ctx *gin.Context) {
+func DeleteProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := db.DeleteProduct(id)
 
@@ -139,7 +138,7 @@ func deleteProduct(ctx *gin.Context) {
 // @Param        Code    query     string  true  "product code"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [put]
-func putProduct(ctx *gin.Context) {
+func PutProduct(ctx *gin.Context) {
 	var updatedProduct db.Product
 	err := ctx.Bind(&updatedProduct)
 	if err != nil {

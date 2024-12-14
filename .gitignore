@@ -16,6 +16,6 @@
 
 # Go workspace file
 .vscode
-.env
+*.env
 main
 bin
