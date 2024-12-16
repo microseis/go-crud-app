@@ -28,10 +28,17 @@ services:
       PGTZ: 'UTC'
     env_file:
       - docker.env
+    volumes:
+      - db:/var/lib/postgresql/data
     networks:
       - myNetwork
     command: -p 5433
+    restart: always
 
 networks:
   myNetwork:
     driver: bridge
+
+volumes:
+  db:
+    driver: local

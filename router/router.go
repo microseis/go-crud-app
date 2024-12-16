@@ -41,6 +41,8 @@ func InitRouter() *gin.Engine {
 // @Param        Price    query     string  true  "product price"
 // @Success      200  {object}  db.Product
 // @Router       /product [post]
+
+// Хендлер создания продукта
 func PostProduct(ctx *gin.Context) {
 	var product db.Product
 	err := ctx.Bind(&product)
@@ -71,6 +73,8 @@ func PostProduct(ctx *gin.Context) {
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [get]
+
+// Хендлер получения продукта по id
 func GetProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	res, err := db.GetProduct(id)
@@ -92,6 +96,7 @@ func GetProduct(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  db.Product
 // @Router       /products [get]
+
 func GetProducts(ctx *gin.Context) {
 	res, err := db.GetProducts()
 	if err != nil {
@@ -113,6 +118,7 @@ func GetProducts(ctx *gin.Context) {
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [delete]
+
 func DeleteProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := db.DeleteProduct(id)
@@ -139,6 +145,7 @@ func DeleteProduct(ctx *gin.Context) {
 // @Param        Code    query     string  true  "product code"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [put]
+
 func PutProduct(ctx *gin.Context) {
 	var updatedProduct db.Product
 	err := ctx.Bind(&updatedProduct)

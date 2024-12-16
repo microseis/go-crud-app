@@ -21,3 +21,9 @@ go run cmd/main.go
 ```
 go test -v ./...
 ```
+
+## Database Migration
+
+```
+ goose -dir db/migrations up
+```

@@ -14,11 +14,7 @@ type Config struct {
 		Host string `yaml:"host" envconfig:"APP_HOST"`
 	} `yaml:"app"`
 	Database struct {
-		Username string `yaml:"db_user" envconfig:"DB_USERNAME"`
-		Password string `yaml:"db_password" envconfig:"DB_PASSWORD"`
-		Port     string `yaml:"db_port" envconfig:"DB_PORT"`
-		Host     string `yaml:"db_host" envconfig:"DB_HOST"`
-		Name     string `yaml:"db_name" envconfig:"DB_NAME"`
+		Dsn string `yaml:"db_dsn" envconfig:"GOOSE_DBSTRING"`
 	} `yaml:"database"`
 }
 
@@ -28,7 +24,7 @@ func ProcessError(err error) {
 }
 //получает настройки приложения из файла config.yml
 func ReadFile(cfg *Config) {
-	f, err := os.Open("./config.yml")
+	f, err := os.Open("/app/config.yml")
 	if err != nil {
 		ProcessError(err)
 	}

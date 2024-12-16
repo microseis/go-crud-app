@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -14,6 +15,13 @@ import (
 var db *gorm.DB
 var err error
 
+var (
+	GORM_DB     *gorm.DB
+	SQL_DB      *sql.DB
+	DB_MIGRATOR gorm.Migrator
+)
+
+
 type Product struct {
 	ID    string `json:"id" gorm:"primarykey"`
 	Code  string `json:"code"`
@@ -21,31 +29,17 @@ type Product struct {
 }
 
 // Инициализация базы данных
-func InitPostgresDB(appConfig *utils.Config) {
+func InitPostgresDB(appConfig *utils.Config) error {
 
-	var (
-		DB_USER     = appConfig.Database.Username
-		DB_PASSWORD = appConfig.Database.Password
-		DB_NAME     = appConfig.Database.Name
-		DB_HOST     = appConfig.Database.Host
-		DB_PORT     = appConfig.Database.Port
-	)
-
-	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		DB_HOST,
-		DB_PORT,
-		DB_USER,
-		DB_NAME,
-		DB_PASSWORD,
-	)
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("Failed to connect database")
-	}
-
-	// Migrate the schema
-	db.AutoMigrate(&Product{})
-	fmt.Println("Table Product has been successfully migrated")
+	var dbURL = appConfig.Database.Dsn
+	
+	db, err = gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	if err == nil {
+        GORM_DB = db
+        SQL_DB, _ = db.DB()
+        DB_MIGRATOR = db.Migrator()
+    }
+    return err
 
 }
 
