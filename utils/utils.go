@@ -10,8 +10,9 @@ import (
 
 type Config struct {
 	App struct {
-		Port string `yaml:"port" envconfig:"APP_PORT"`
-		Host string `yaml:"host" envconfig:"APP_HOST"`
+		Port  string `yaml:"port" envconfig:"APP_PORT"`
+		Host  string `yaml:"host" envconfig:"APP_HOST"`
+		Local bool   `yaml:"local" envconfig:"LOCAL"`
 	} `yaml:"app"`
 	Database struct {
 		Dsn string `yaml:"db_dsn" envconfig:"GOOSE_DBSTRING"`
@@ -22,9 +23,18 @@ func ProcessError(err error) {
 	fmt.Println(err)
 	os.Exit(2)
 }
-//получает настройки приложения из файла config.yml
+
+// получает настройки приложения из файла config.yml
 func ReadFile(cfg *Config) {
-	f, err := os.Open("/app/config.yml")
+	var configPath string
+	
+	if cfg.App.Local{
+		configPath = "/app/config.yml"
+	} else {
+		configPath = "config.yml"
+	}
+		
+	f, err := os.Open(configPath)
 	if err != nil {
 		ProcessError(err)
 	}
@@ -36,6 +46,7 @@ func ReadFile(cfg *Config) {
 		ProcessError(err)
 	}
 }
+
 // считывает переменные окружения.
 func ReadEnv(cfg *Config) {
 	err := envconfig.Process("", cfg)

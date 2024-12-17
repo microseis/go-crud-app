@@ -5,6 +5,7 @@ app:
   host: "localhost"
   port: "5000"
   gin_mode: "debug"
+  local: True
 
 # Database credentials
 database:

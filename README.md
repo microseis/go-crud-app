@@ -27,3 +27,8 @@ go test -v ./...
 ```
  goose -dir db/migrations up
 ```
+
+## Generate Swagger/Open API Spec
+```
+swag init -g cmd/main.go
+```

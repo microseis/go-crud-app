@@ -27,6 +27,8 @@ func InitRouter() *gin.Engine {
 		v1.GET("/products", GetProducts)
 		v1.PUT("/product/:id", PutProduct)
 		v1.DELETE("/product/:id", DeleteProduct)
+
+		v1.POST("/user", PostUser)
 	}
 
 	return r
@@ -39,9 +41,9 @@ func InitRouter() *gin.Engine {
 // @Produce      json
 // @Param        Code    query     string  true  "product code"
 // @Param        Price    query     string  true  "product price"
+// @Param        User_ID   query     int  true  "product user id"
 // @Success      200  {object}  db.Product
 // @Router       /product [post]
-
 // Хендлер создания продукта
 func PostProduct(ctx *gin.Context) {
 	var product db.Product
@@ -73,7 +75,6 @@ func PostProduct(ctx *gin.Context) {
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [get]
-
 // Хендлер получения продукта по id
 func GetProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
@@ -96,7 +97,6 @@ func GetProduct(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  db.Product
 // @Router       /products [get]
-
 func GetProducts(ctx *gin.Context) {
 	res, err := db.GetProducts()
 	if err != nil {
@@ -118,7 +118,6 @@ func GetProducts(ctx *gin.Context) {
 // @Param        id   path      string  true  "Product ID"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [delete]
-
 func DeleteProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := db.DeleteProduct(id)
@@ -145,7 +144,6 @@ func DeleteProduct(ctx *gin.Context) {
 // @Param        Code    query     string  true  "product code"
 // @Success      200  {object}  db.Product
 // @Router       /product/{id} [put]
-
 func PutProduct(ctx *gin.Context) {
 	var updatedProduct db.Product
 	err := ctx.Bind(&updatedProduct)
@@ -177,5 +175,38 @@ func PutProduct(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"product": res,
+	})
+}
+
+
+// @Summary      Create User
+// @Description  create a user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        Name    query     string  true  "user name"
+// @Param        Email    query     string  true  "user email"
+// @Success      200  {object}  db.User
+// @Router       /user [post]
+// Хендлер создания пользователя
+func PostUser(ctx *gin.Context) {
+	var user db.User
+	err := ctx.Bind(&user)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	res, err := db.CreateUser(&user)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"user": res,
 	})
 }

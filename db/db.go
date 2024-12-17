@@ -7,7 +7,6 @@ import (
 
 	"aleksei/go/utils"
 
-	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -23,9 +22,16 @@ var (
 
 
 type Product struct {
-	ID    string `json:"id" gorm:"primarykey"`
+	ID    int `json:"id" gorm:"primarykey"`
 	Code  string `json:"code"`
 	Price int32  `json:"price"`
+	User_ID int `json:"user_id"`
+}
+
+type User struct {
+	ID int `json:"id" gorm:"primarykey"`
+	Name string `json:"name"`
+	Email string `json:"email"`
 }
 
 // Инициализация базы данных
@@ -45,7 +51,13 @@ func InitPostgresDB(appConfig *utils.Config) error {
 
 // Создание продукта.
 func CreateProduct(product *Product) (*Product, error) {
-	product.ID = uuid.New().String()
+	var user User
+	userRes := db.First(&user, "id = ?", product.User_ID)
+	if userRes.RowsAffected == 0 {
+		return nil, fmt.Errorf("user of id %d not found", product.User_ID)
+	}
+
+	product.User_ID = user.ID
 	res := db.Create(&product)
 
 	if res.Error != nil {
@@ -99,4 +111,15 @@ func DeleteProduct(id string) error {
 	}
 
 	return nil
+}
+
+
+// Создание пользователя.
+func CreateUser(user *User) (*User, error) {
+	res := db.Create(&user)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	return user, nil
 }

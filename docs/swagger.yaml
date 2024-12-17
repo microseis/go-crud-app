@@ -5,9 +5,20 @@ definitions:
       code:
         type: string
       id:
-        type: string
+        type: integer
       price:
         type: integer
+      user_id:
+        type: integer
+    type: object
+  db.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
     type: object
 externalDocs:
   description: OpenAPI
@@ -34,6 +45,11 @@ paths:
         name: Price
         required: true
         type: string
+      - description: product user id
+        in: query
+        name: User_ID
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -130,6 +146,32 @@ paths:
       summary: Get Products
       tags:
       - products
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: create a user
+      parameters:
+      - description: user name
+        in: query
+        name: Name
+        required: true
+        type: string
+      - description: user email
+        in: query
+        name: Email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.User'
+      summary: Create User
+      tags:
+      - users
 securityDefinitions:
   BasicAuth:
     type: basic

@@ -17,7 +17,6 @@ import (
 // @BasePath  /api/v1
 // @securityDefinitions.basic  BasicAuth
 // @externalDocs.description  OpenAPI
-
 func main() {
 
 	var cfg utils.Config
@@ -31,8 +30,17 @@ func main() {
 	if err := goose.SetDialect("postgres"); err != nil {
         panic(err)
     }
+
+	var migrationPath string
+	
+	if cfg.App.Local{
+		migrationPath = "./migrations"
+	} else {
+		migrationPath = "/app/migrations"
+	}
+
 	// применение всех миграций goose
-    if err := goose.Up(db.SQL_DB, "/app/migrations"); err != nil {
+    if err := goose.Up(db.SQL_DB, migrationPath); err != nil {
         panic(err)
     }
 	log.Println("INFO: all migrations successfully applied to db")
